@@ -14,6 +14,9 @@ type HTTPPool struct {
 	basePath string //节点间通讯地址的前缀，默认/_geecache/
 }
 
+func (p *HTTPPool) Handler() http.Handler {
+	return http.HandlerFunc(p.SeverHTTP)
+}
 func GetGroup(groupName string) *Group {
 	return groups[groupName]
 }
