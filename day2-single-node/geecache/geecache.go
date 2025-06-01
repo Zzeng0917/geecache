@@ -116,21 +116,3 @@ func (g *Group) getFromPeer(peer PeerGetter, key string) (ByteView, error) {
 	}
 	return ByteView{b: bytes}, nil
 } //实现PeerGetter接口的httpGetter访问远程节点，获取缓存值
-
-func (g *Group) load(key string) (value ByteView, err error) {
-	viewi, err := g.loader.Do(key, func() (interface{}, error) {
-		if g.peers != nil {
-			if peer, ok := g.peers.PickPeer(key); ok {
-				if value, err = g.getFromPeer(peer, key); err == nil {
-					return value, nil
-				}
-				log.Println("[GeeCache] failed to get from peer", err)
-			}
-		}
-		return g.getLocally(key)
-	})
-	if err != nil {
-		return viewi.ByteView(), nil
-	}
-	return
-} //使用singleflight实现缓存加载
